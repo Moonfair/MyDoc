@@ -1,0 +1,11 @@
+一、GCD
+1、设a>1,m,n>0,则gcd(a^m-1,a^n-1)=a^gcd(m,n)-1
+2、设a>b,gcd(a,b)=1,则gcd(a^m-b^m,a^n-b^n)=a^gcd(m,n)-b^gcd(m,n)
+3、G=gcd(组合数从1到n-1)={n(n为质数),1(n有多个质因子),p(n有单个质因子p)}
+4、gcd(Fib(m),Fib(n))=Fib(gcd(m,n))
+
+二、欧拉定理
+
+三、卢卡斯定理
+
+四、中国剩余定理
