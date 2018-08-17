@@ -9,3 +9,70 @@
 
 (a  /  b) % p = (a%p  /  b%p) %p  （错）
    
+    通常的做法对于除法是不成立的，但通过求逆元可以解决这个问题。
+2、引入逆元
+   逆元又称数论倒数，一般意义下，如果有
+   a*x=1 则称x是a的倒数。而如果
+   a*x=1(mod p) 则称x为a关于p的逆元，这里p和1/x的作用一样，所以称为数论倒数。
+   于是，我们可以把(a / b) % p写成(a * inv(b)) % p
+   这样就将除法转换成了乘法
+3、求逆元
+   前提：仅当a和p互质，a才有关于p的逆元。
+ (1)费马小定理
+ 仅当p为质数是可用
+ 时间复杂度O(logN)
+   a^(p-1)≡1(mod p)
+   两边同除以a,右边即是inv(a)
+   所以 inv(a)=a^(p-2)
+   可使用快速幂来计算
+   
+   LL pow_mod(LL a, LL b, LL p){//a的b次方求余p 
+       LL ret = 1;
+       while(b){
+           if(b & 1) ret = (ret * a) % p;
+           a = (a * a) % p;
+           b >>= 1;
+       }
+       return ret;
+   }
+   LL Fermat(LL a, LL p){//费马求a关于b的逆元 
+        return pow_mod(a, p-2, p);
+   }
+ (2)扩展欧几里得
+ 可用于p不是质数的情况
+ 时间复杂度O(logN)
+   对于ax+by=1
+   解出的x即为inv(a)关于b
+   y即为inv(b)关于a
+   证明过程只需两边同时对b取余即可
+   
+   void ex_gcd(LL a, LL b, LL &x, LL &y, LL &d){
+       if (!b) {d = a, x = 1, y = 0;}
+       else{
+           ex_gcd(b, a % b, y, x, d);
+           y -= x * (a / b);
+       }
+   }
+   LL inv(LL t, LL p){//如果不存在，返回-1 
+       LL d, x, y;
+       ex_gcd(t, p, x, y, d);
+       return d == 1 ? (x % p + p) % p : -1;
+   }
+   
+ (3)递归求逆元
+ 仅用于p为素数
+ 可用于求N个数的逆元
+ 时间复杂度O(N)
+   原理:p为质数时
+   inv(a) = (p - p / a) * inv(p % a) % p
+   证明略
+   使用记忆化递归即可实现求N个数的逆元
+   
+   int inv[N];
+   int init(){
+       inv[1] = 1;
+       for(int i = 2; i < N; i ++){
+           inv[i] = (MOD - MOD / i) * 1ll * inv[MOD % i] % MOD;//那个1ll读作“一浪浪”
+       }
+   }
+ 
