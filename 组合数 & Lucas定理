@@ -23,3 +23,10 @@ int comb(int n, int m){//comb(n, m)就是C(n, m)
     if(m < 0 || m > n) return 0;
     return F[n] * 1ll * Finv[n - m] % MOD * Finv[m] % MOD;
 }
+
+卢卡斯定理
+用于n和m过大的情况
+
+LL Lucas(LL n, LL m, int p){
+        return m ? Lucas(n/p, m/p, p) * comb(n%p, m%p, p) % p : 1;
+}
