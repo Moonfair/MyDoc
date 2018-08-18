@@ -1,3 +1,4 @@
+//参考 https://www.cnblogs.com/linyujun/p/5194170.html#commentform
 1、为什么需要欧拉函数
     和逆元一样，使用欧拉函数是为了解决对大数运算的中间结果取模的情况
     不同的是，逆元是解决除法的问题，而欧拉函数是解决幂运算的问题
@@ -6,3 +7,58 @@
     a^b%p=(a%p)^(b%(p-1))%p
     这是由费马小定理推导来的
 2、欧拉函数的求法
+  1)基础求法
+  时间复杂度O(√n)
+  
+  //欧拉函数
+  int phi(int x){
+      int ans = x;
+      for(int i = 2; i*i <= x; i++){
+          if(x % i == 0){
+              ans = ans / i * (i-1);
+              while(x % i == 0) x /= i;
+          }
+      }
+      if(x > 1) ans = ans / x * (x-1);
+      return ans;
+  }
+  
+  2)筛法
+  可用于求N个数的欧拉函数值
+  复杂度O(N)
+  
+  int phi[N];
+  void Euler(){
+      phi[1] = 1;
+      for(int i = 2; i < N; i ++){
+          if(!phi[i]){
+              for(int j = i; j < N; j += i){
+                  if(!phi[j]) phi[j] = j;
+                  phi[j] = phi[j] / i * (i-1);
+              }
+          }
+      }
+  }
+  
+  3)递归，更快的筛法
+  可用于求N个数的欧拉函数值
+  复杂度更低
+  
+  int phi[N], prime[N];
+  int tot;//tot计数，表示prime[N]中有多少质数 
+  void Euler(){
+      phi[1] = 1;
+      for(int i = 2; i < N; i ++){
+          if(!phi[i]){
+              phi[i] = i-1;
+              prime[tot ++] = i;
+          }
+          for(int j = 0; j < tot && 1ll*i*prime[j] < N; j ++){
+              if(i % prime[j]) phi[i * prime[j]] = phi[i] * (prime[j]-1);
+              else{
+                  phi[i * prime[j] ] = phi[i] * prime[j];
+                  break;
+              }
+          }
+      }
+  }
