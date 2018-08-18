@@ -25,7 +25,7 @@
   
   2)筛法
   可用于求N个数的欧拉函数值
-  复杂度O(N)
+  复杂度O(NloglogN)
   
   int phi[N];
   void Euler(){
@@ -42,7 +42,7 @@
   
   3)递归，更快的筛法
   可用于求N个数的欧拉函数值
-  复杂度更低
+  复杂度O(N)
   
   int phi[N], prime[N];
   int tot;//tot计数，表示prime[N]中有多少质数 
