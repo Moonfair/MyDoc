@@ -1,5 +1,12 @@
 数组的一个排列到自然数的双射
 常用于状态压缩
+状态对应的数字从1开始算
+数字代表了字典序递增的顺序
+无论展开和逆展开，数组s的元素都是1到k
+当题目中的数组不符合要求时，应先进行变形
+如：
+要求研究从数组一个状态到另一个状态
+则需要对初始数组和目标数组都进行变形(详细见例题)
 
 void cantor(int s[], LL num, int k){//康托展开，把一个数字num展开成一个数组s，k是数组长度
     int t;
@@ -28,4 +35,250 @@ void inv_cantor(int s[], LL &num, int k){//康托逆展开，把一个数组s换
         }
         num += fac[k-i-1] * cnt;
     }
+}
+
+
+例题：HDU 1430
+在魔方风靡全球之后不久，Rubik先生发明了它的简化版——魔板。魔板由8个同样大小的方块组成，每个方块颜色均不相同，可用数字1-8分别表示。任一时刻魔板的状态可用方块的颜色序列表示：从魔板的左上角开始，按顺时针方向依次写下各方块的颜色代号，所得到的数字序列即可表示此时魔板的状态。例如，序列(1,2,3,4,5,6,7,8)表示魔板状态为：
+
+1 2 3 4
+
+8 7 6 5
+
+对于魔板，可施加三种不同的操作，具体操作方法如下：
+
+A: 上下两行互换,如上图可变换为状态87654321
+
+B: 每行同时循环右移一格,如上图可变换为41236785
+
+C: 中间4个方块顺时针旋转一格,如上图可变换为17245368
+
+给你魔板的初始状态与目标状态，请给出由初态到目态变换数最少的变换步骤，若有多种变换方案则取字典序最小的那种。
+
+ 
+
+Input
+
+每组测试数据包括两行，分别代表魔板的初态与目态。
+
+ 
+
+Output
+
+对每组测试数据输出满足题意的变换步骤。
+
+ 
+
+Sample Input
+
+12345678
+
+17245368
+
+12345678
+
+82754631
+
+ 
+
+Sample Output
+
+C
+
+AC
+
+标程
+
+#include<cstdio>
+
+#include<cstring>
+
+#include<iostream>
+
+#include<string>
+
+#include<algorithm>
+
+#include<queue>
+
+using namespace std; 
+
+typedef long long LL;
+
+const int N = 8;
+
+queue <LL> que;
+
+string ans[50000];
+
+char str1[10], str2[10];
+
+bool vis[50000];
+
+int map[10];//映射
+
+int num[10];
+
+ 
+
+LL fac[N];//阶乘
+
+void change(int s[], int o){//o分别是0,1,2，表示ABC三种变化
+
+    switch(o){
+
+        case 0:
+
+            for(int i = 0; i < 4; i ++) swap(s[i], s[8-i-1]);
+
+            break;
+
+        case 1:
+
+            for(int i = 3; i >= 1; i --) swap(s[i], s[i-1]);
+
+            for(int i = 4; i < 7; i ++) swap(s[i], s[i+1]);
+
+            break;
+
+        case 2:
+
+            swap(s[1], s[6]);
+
+            swap(s[6], s[5]);
+
+            swap(s[5], s[2]);    
+
+            break;
+
+    } 
+
+} 
+
+void cantor(int s[], LL num, int k){//康托展开，把一个数字num展开成一个数组s，k是数组长度
+
+    int t;
+
+    bool h[k];//0到k-1，表示是否出现过 
+
+    memset(h, 0, sizeof(h)); 
+
+    for(int i = 0; i < k; i ++){
+
+        t = num / fac[k-i-1];
+
+        num = num % fac[k-i-1];
+
+        for(int j = 0, pos = 0; ; j ++, pos ++){
+
+            if(h[pos]) j --;
+
+            if(j == t){
+
+                h[pos] = true;
+
+                s[i] = pos + 1;
+
+                break;
+
+            }
+
+        }
+
+    }
+
+}
+
+void inv_cantor(int s[], LL &num, int k){//康托逆展开，把一个数组s换算成一个数字num 
+
+    int cnt;
+
+    num = 0;
+
+    for(int i = 0; i < k; i ++){
+
+        cnt = 0;
+
+        for(int j = i + 1; j < k; j ++){
+
+            if(s[i] > s[j]) cnt ++;//判断几个数小于它
+
+        }
+
+        num += fac[k-i-1] * cnt;
+
+    }
+
+}
+
+void init(){
+
+    fac[0] = 1;
+
+    for(int i = 1; i < N; i ++) fac[i] = fac[i-1] * i;
+
+    int a[8], b[8];
+
+    LL temp, temp2;
+
+    que.push(0);
+
+    vis[0] = true;
+
+    while(!que.empty()){
+
+        LL temp = que.front(); que.pop();
+
+        cantor(a, temp, 8);
+
+        for(int i = 0; i < 3; i ++){
+
+            copy(a, a+8, b);
+
+            change(b, i);
+
+            inv_cantor(b, temp2, 8);
+
+            if(!vis[temp2]){
+
+                que.push(temp2);
+
+                vis[temp2] = true;
+
+                ans[temp2] = ans[temp] + (char)('A' + i);
+
+            }
+
+        }
+
+    }
+
+}
+
+int main(){
+
+    init();
+
+    while(~scanf("%s", str1)){
+
+        scanf("%s", str2);
+
+        //先把所有初始状态都转换成12345678
+
+        //最终状态根据初始状态的转换而转换 (就是底下两行代码的作用)
+
+        //这样只要一次预处理就可以解决问题了 
+
+        for(int i = 0; i < 8; i ++) map[str1[i] - '0'] = i + 1;
+
+        for(int i = 0; i < 8; i ++) num[i] = map[str2[i] - '0'];
+
+        LL temp;
+
+        inv_cantor(num, temp, 8);
+
+        cout << ans[temp] << endl;
+
+    }
+
 }
