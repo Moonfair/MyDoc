@@ -39,6 +39,24 @@ def count_factors(num):
 			return ret
 	return ret
 
+附2：求一堆数有几个因子的模板
+
+void chu()
+{
+    int i,j;
+    for(i=1;i<maxn;i++)
+    {
+        ps[i]=1;
+    }
+    for(i=2;i<maxn;i++)
+    {
+        for(j=1;j*i<maxn;j++)
+        {
+            ps[i*j]++;
+        }
+    }
+}
+
 五、莫比乌斯反演
 
 六、复数
