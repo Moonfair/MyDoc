@@ -16,47 +16,6 @@
 1、若p为质数，a,p互质，则a^(p-1)≡1(mod p)
 2、若p为质数，a,p不互质，则a^(p-1)≡0(mod p)
 
-四、因数
-1、一个数因子个数 = 分解质因子后各因子幂次加一的乘积
-2、两个数乘积的因子个数等于两个数因子个数的乘积
-附：一个数有几个因数的模板
-  (需要提前筛好数组prime)
-def count_factors(num):
-	ret = 1
-	if num % 2 == 0:
-		count = 0
-		while num % 2 == 0:
-			count += 1
-			num /= 2
-		ret *= count
-	for x in primes:
-		count = 1
-		while num % x == 0:
-			count += 1
-			num /= x
-		ret *= count
-		if num == 1:
-			return ret
-	return ret
+四、莫比乌斯反演
 
-附2：求一堆数有几个因子的模板
-
-void chu()
-{
-    int i,j;
-    for(i=1;i<maxn;i++)
-    {
-        ps[i]=1;
-    }
-    for(i=2;i<maxn;i++)
-    {
-        for(j=1;j*i<maxn;j++)
-        {
-            ps[i*j]++;
-        }
-    }
-}
-
-五、莫比乌斯反演
-
-六、复数
+五、复数
